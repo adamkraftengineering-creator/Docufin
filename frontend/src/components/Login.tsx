@@ -5,7 +5,7 @@ import { FileText, Lock, Mail, AlertCircle } from 'lucide-react';
 export const Login: React.FC = () => {
 
   const { login } = useAuth();
-  const [email, setEmail] = useState('alice@acme.com');
+  const [email, setEmail] = useState('test1@offerzen.com');
   const [password, setPassword] = useState('password123');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
