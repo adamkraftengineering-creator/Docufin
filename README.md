@@ -14,7 +14,7 @@ The platform is engineered around strict tenant data isolation, SOLID design pri
   │                      (docu_workspace)                    │
   ├───────────────────┬───────────────────┬──────────────────┤
   │      Tenants      │       Users       │    Documents     │
-  │  (Offerzen, Adam...)  │ (test1@, test2@)  │  (Tax, Audit...) │
+  │  (Offerzen,Adam)  │ (test1@, test2@)  │  (Tax, Audit...) │
   └─────────┬─────────┴─────────┬─────────┴────────┬─────────┘
             │                   │                  │
             └─── tenant_id ─────┴─── tenant_id ────┘
