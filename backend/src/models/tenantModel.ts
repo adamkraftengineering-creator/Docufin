@@ -2,8 +2,8 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
 
 export class Tenant extends Model {
-  public id!: string;
-  public name!: string;
+  declare id: string;
+  declare name: string;
 }
 
 Tenant.init(
