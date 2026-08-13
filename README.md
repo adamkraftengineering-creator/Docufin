@@ -143,8 +143,8 @@ The seeder populates two distinct tenants to demonstrate data isolation:
 
 | User Email | Password | Tenant Workspace | Sample Documents |
 | :--- | :--- | :--- | :--- |
-| `test1@offerzen.com` | `password123` | **Acme Accounting** | 2026 Q1 Tax Return, Audit Report, Payroll Summary |
-| `test2@offerzen.com` | `password123` | **Beta Finance** | Beta Financial Plan |
+| `test1@offerzen.com` | `password123` | ** Offerzen Accounting** | 2026 Q1 Tax Return, Audit Report, Payroll Summary |
+| `test2@offerzen.com` | `password123` | **Adam Finance** | Beta Financial Plan |
 
 ---
 
