@@ -4,7 +4,6 @@ import { Document, DocumentStatus } from '../types';
 import { Search, Plus, FileText, CheckCircle2, Clock, FileEdit, AlertCircle, RefreshCw } from 'lucide-react';
 
 export const DocumentList: React.FC = () => {
-
   const [documents, setDocuments] = useState<Document[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -39,6 +38,11 @@ export const DocumentList: React.FC = () => {
 
   const handleStatusChange = async (id: string, newStatus: DocumentStatus) => {
 
+    if (!id || id === 'undefined') {
+      alert('Cannot update status: Document ID is invalid or missing.');
+      return;
+    }
+
     setUpdatingId(id);
 
     try {
@@ -59,7 +63,6 @@ export const DocumentList: React.FC = () => {
   const handleCreateDocument = async (e: React.FormEvent) => {
 
     e.preventDefault();
-
     if (!newTitle.trim()) return;
 
     try {
@@ -89,10 +92,25 @@ export const DocumentList: React.FC = () => {
     }
   };
 
+  const formatDate = (dateString?: string) => {
+
+    if (!dateString) return 'N/A';
+
+    const date = new Date(dateString);
+    
+    return isNaN(date.getTime())
+      ? 'N/A'
+      : date.toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+  };
+
   return (
-
     <div className="workspace-container">
-
       <div className="workspace-header">
         <div>
           <h1>Tenant Documents</h1>
@@ -102,7 +120,6 @@ export const DocumentList: React.FC = () => {
 
       {/* Action Controls */}
       <div className="toolbar">
-
         <div className="search-box">
           <Search size={18} className="search-icon" />
           <input
@@ -126,7 +143,6 @@ export const DocumentList: React.FC = () => {
             {isCreating ? 'Creating...' : 'Add Document'}
           </button>
         </form>
-
       </div>
 
       {/* Feedback States */}
@@ -139,7 +155,6 @@ export const DocumentList: React.FC = () => {
 
       {/* Table */}
       <div className="table-card">
-
         {loading ? (
           <div className="state-container">
             <RefreshCw size={24} className="spin" />
@@ -153,7 +168,6 @@ export const DocumentList: React.FC = () => {
           </div>
         ) : (
           <table className="data-table">
-
             <thead>
               <tr>
                 <th>Document Title</th>
@@ -164,46 +178,42 @@ export const DocumentList: React.FC = () => {
             </thead>
 
             <tbody>
-              {documents.map((doc) => (
-                <tr key={doc.id}>
+              {documents.map((doc, index) => {
+                const docId = doc.id;
+                // Supports either updatedAt (Sequelize standard) or updated_at
+                const rawDate = (doc as any).updatedAt || (doc as any).updated_at;
 
-                  <td className="title-cell">
-                    <FileText size={18} className="doc-icon" />
-                    <span>{doc.title}</span>
-                  </td>
-                  <td>{getStatusBadge(doc.status)}</td>
+                return (
+                  <tr key={docId || index}>
+                    <td className="title-cell">
+                      <FileText size={18} className="doc-icon" />
+                      <span>{doc.title}</span>
+                    </td>
+                    <td>{getStatusBadge(doc.status)}</td>
 
-                  <td className="date-cell">
-                    {new Date(doc.updated_at).toLocaleDateString(undefined, {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </td>
-                  
-                  <td>
-                    <select
-                      className="status-select"
-                      value={doc.status}
-                      disabled={updatingId === doc.id}
-                      onChange={(e) => handleStatusChange(doc.id, e.target.value as DocumentStatus)}
-                    >
-                      <option value="draft">Draft</option>
-                      <option value="awaiting_signature">Awaiting Signature</option>
-                      <option value="signed">Signed</option>
-                    </select>
-                  </td>
+                    <td className="date-cell">{formatDate(rawDate)}</td>
 
-                </tr>
-              ))}
+                    <td>
+                      <select
+                        className="status-select"
+                        value={doc.status}
+                        disabled={updatingId === docId || !docId}
+                        onChange={(e) =>
+                          handleStatusChange(docId, e.target.value as DocumentStatus)
+                        }
+                      >
+                        <option value="draft">Draft</option>
+                        <option value="awaiting_signature">Awaiting Signature</option>
+                        <option value="signed">Signed</option>
+                      </select>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
-
           </table>
         )}
       </div>
-
     </div>
   );
 };
